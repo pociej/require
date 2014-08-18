@@ -16,18 +16,7 @@ Package.on_use(function (api) {
   if (api.export !== undefined) {
     api.export('AMDManager', ['client', 'server']);
     api.export('define', ['client', 'server']);
-    api.export('require', ['client', 'server']);
+    api.export('moduleRequire', ['client', 'server']);
   }
 });
 
-
-Package.on_test(function (api) {
-  // ENVIRONMENT
-  api.use('tinytest', ['client', 'server']);
-  api.add_files('manager.js', ['client', 'server']);
-
-  // TESTS
-  api.add_files([
-    'tests.js',
-  ], 'client');
-});

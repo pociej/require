@@ -66,6 +66,7 @@ AMDManager = function (options) {
   // - require all dependecies
   // - finally call module body
   manager.load = function (module, action) { //XXX action can be undefined
+    if(typeof module.name !== 'object'){
     if (_.has(module, 'data')) {
       // it seems that the module has been already loaded
       _.isFunction(action) && action.call({}, module.data);
@@ -74,7 +75,7 @@ AMDManager = function (options) {
       if (!module.lock && _.has(module, 'body')) {
         module.lock = true;
         loadingStack.push(module.name);
-        manager.require(_.map(module.deps, relativeTo(module.name)), function () {
+        manager.moduleRequire(_.map(module.deps, relativeTo(module.name)), function () {
           if (!_.has(module, 'data')) {
             // TODO: do we need nonreactive wrapper here?
             module.data = module.body.apply({}, arguments);
@@ -97,6 +98,8 @@ AMDManager = function (options) {
         }
       }
     }
+    }
+
   };
 
   manager.define = function (name, deps, body) {
@@ -110,7 +113,7 @@ AMDManager = function (options) {
     manager.load(module);
   };
 
-  manager.require = function (deps, body) {
+  manager.moduleRequire = function (deps, body) {
     var todo = deps.length, _deps = _.clone(deps);
     var resolve = function (data, i) {
       _deps[i] = data;
